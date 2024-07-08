@@ -1,120 +1,30 @@
-import { CounterContextProvider, useCounter } from "./context/CounterContext";
-import withCounter from "./components/higherOrderTest/withCounter";
 import { useState } from "react";
+import Modal from "./components/portal/Modal";
 
-const Test1 = (props) => {
-    return (
-        <div className="max-w-md border p-4">
-            <p>Test1 : {props.count}</p>
-            <button className="btn btn-sm" onClick={props.handleCount}>
-                Click 1
-            </button>
-        </div>
-    );
-};
+const App = () => {
+    const [open, setOpen] = useState(false);
 
-const Test2 = (props) => {
-    console.log(props);
-    return (
-        <div className="max-w-md border p-4">
-            <p>Test2 : {props.count}</p>
-            <button className="btn btn-sm" onClick={props.handleCount}>
-                Click 2
-            </button>
-        </div>
-    );
-};
-
-const Test3 = () => {
-    const { count, handleCount } = useCounter();
-
-    return (
-        <div className="max-w-md border p-4">
-            <p>Test3 : {count}</p>
-            <button className="btn btn-sm" onClick={handleCount}>
-                Click 3
-            </button>
-        </div>
-    );
-};
-
-const Test4 = () => {
-    const { count, handleCount } = useCounter();
-    return (
-        <div className="max-w-md border p-4">
-            <p>Test4 : {count}</p>
-            <button className="btn btn-sm" onClick={handleCount}>
-                Click 4
-            </button>
-        </div>
-    );
-};
-
-const Test5 = ({ count, handleCount }) => {
-    return (
-        <div className="max-w-md border p-4">
-            <p>Test5 : {count}</p>
-            <button className="btn btn-sm" onClick={handleCount}>
-                Click 5
-            </button>
-        </div>
-    );
-};
-
-const Test6 = ({ count, handleCount }) => {
-    return (
-        <div className="max-w-md border p-4">
-            <p>Test6 : {count}</p>
-            <button className="btn btn-sm" onClick={handleCount}>
-                Click 6
-            </button>
-        </div>
-    );
-};
-
-const LiftingUp = () => {
-    const [count, setCount] = useState(0);
-
-    const handleCount = () => setCount((preCount) => preCount + 1);
+    const onOpen = () => setOpen(true);
+    const onClose = () => setOpen(false);
 
     return (
         <>
-            <Test5 count={count} handleCount={handleCount} />
-            <Test6 count={count} handleCount={handleCount} />
+            <div className="m-4" onClick={(e) => console.log("Clicked")}>
+                <h2 className="text-2xl">This is parent element.</h2>
+                <button
+                    data-modal-target="center-center-modal"
+                    data-modal-toggle="center-center-modal"
+                    className="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    type="button"
+                    onClick={onOpen}
+                >
+                    Toggle modal
+                </button>
+                <Modal onClose={onClose} open={open} />
+                <div id="modal"></div>
+            </div>
         </>
     );
 };
 
-const App = () => {
-    const Test1Wrapped = withCounter(Test1);
-    const Test2Wrapped = withCounter(Test2);
-
-    return (
-        <div className="space-y-10 m-2">
-            <h2 className="text-2xl font-bold">Higher Order Components</h2>
-            <Test1Wrapped name="Test1" />
-            <Test2Wrapped name="Test2" />
-            
-            <h2 className="text-2xl font-bold">Context API</h2>
-            <CounterContextProvider>
-                <Test3 />
-                <Test4 />
-            </CounterContextProvider>
-
-            <h2 className="text-2xl font-bold">State Lifting Up</h2>
-            <LiftingUp />
-        </div>
-    );
-};
-
 export default App;
-
-/* 
- - Accept a component
- - return a new or enhance component with additional props or behaviors
- - two approaches to implement HOCs
-    1. Passing the original component as a parameter
-    2. Render props
- - 
-
-*/
