@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import { useTodo } from "../../context/TodoContext";
+import axios from "axios";
 
 const EditTodo = () => {
-    const { editTask, dispatch, setEditTask, setModal } = useTodo();
+    const { editTask, setTodoList, setEditTask, setModal } = useTodo();
 
     useEffect(() => {
         const handleEsc = (e) => {
@@ -27,11 +28,17 @@ const EditTodo = () => {
                         method="dialog"
                         onSubmit={(e) => {
                             e.preventDefault();
-                            dispatch({
-                                type: "editTodo",
-                                editId: editTask.id,
-                                payload: editTask.title,
-                            });
+                            axios.patch(
+                                `http://localhost:8000/todoList/${editTask.id}`,
+                                editTask
+                            );
+                            setTodoList((pre) => [
+                                ...pre.map((item) =>
+                                    item.id === editTask.id
+                                        ? { ...item, editTask }
+                                        : item
+                                ),
+                            ]);
                             setModal(false);
                         }}
                     >

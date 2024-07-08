@@ -3,7 +3,8 @@ import TodoItem from "./TodoItem";
 
 const TodoList = () => {
     const { todoList } = useTodo();
-    const activeTodo = todoList.filter((todo) => !todo.isDone);
+    const activeTodo = todoList && todoList.filter((todo) => !todo.isDone);
+    const completeTodo = todoList.length - activeTodo.length;
 
     return (
         <div className="overflow-x-auto max-w-md">
@@ -14,22 +15,26 @@ const TodoList = () => {
                         {todoList.length}
                     </span>
                 </button>
-                <button className="btn btn-sm flex items-center">
-                    Completed
-                    <span className="badge badge-primary">
-                        {todoList.length - activeTodo.length}
-                    </span>
-                </button>
-                <button className="btn btn-sm flex items-center">
-                    Active
-                    <span className="badge badge-primary">
-                        {activeTodo.length}
-                    </span>
-                </button>
+                {completeTodo > 0 && (
+                    <button className="btn btn-sm flex items-center">
+                        Completed
+                        <span className="badge badge-primary">
+                            {completeTodo}
+                        </span>
+                    </button>
+                )}
+                {activeTodo.length > 0 && (
+                    <button className="btn btn-sm flex items-center">
+                        Active
+                        <span className="badge badge-primary">
+                            {activeTodo.length}
+                        </span>
+                    </button>
+                )}
             </div>
             <table className="table">
-                <thead>
-                    <tr className="font-bold">
+                <thead className="text-black">
+                    <tr>
                         <th>Title</th>
                         <th>isDone</th>
                         <th className="text-center">Actions</th>

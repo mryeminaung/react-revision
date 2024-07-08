@@ -1,16 +1,20 @@
 import { useState } from "react";
+import axios from "axios";
 import { useTodo } from "../../context/TodoContext";
 
 const AddTodo = () => {
     const [task, setTask] = useState({ title: "", isDone: false });
-    const { dispatch } = useTodo();
+    const { setTodoList } = useTodo();
 
     return (
         <div className="max-w-[410px]">
             <form
                 onSubmit={(e) => {
                     e.preventDefault();
-                    dispatch({ type: "addTodo", payload: task });
+                    const obj = axios.post("http://localhost:8000/todoList", {
+                        ...task,
+                    });
+                    obj.then((res) => setTodoList((pre) => [...pre, res.data]));
                     setTask({ title: "", isDone: false });
                 }}
             >

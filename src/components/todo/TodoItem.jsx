@@ -1,7 +1,8 @@
+import axios from "axios";
 import { useTodo } from "../../context/TodoContext";
 
 const TodoItem = ({ todo }) => {
-    const { dispatch, setEditTask, setModal } = useTodo();
+    const { setTodoList, setEditTask, setModal } = useTodo();
 
     return (
         <tr>
@@ -14,11 +15,17 @@ const TodoItem = ({ todo }) => {
                 <label>
                     <input
                         onChange={(e) => {
-                            dispatch({
-                                type: "isDone",
-                                doneId: todo.id,
-                                checked: e.target.checked,
-                            });
+                            axios.patch(
+                                `http://localhost:8000/todoList/${todo.id}`,
+                                { isDone: e.target.checked }
+                            );
+                            setTodoList((pre) => [
+                                ...pre.map((item) =>
+                                    item.id === todo.id
+                                        ? { ...item, isDone: e.target.checked }
+                                        : item
+                                ),
+                            ]);
                         }}
                         checked={todo.isDone}
                         type="checkbox"
@@ -37,9 +44,14 @@ const TodoItem = ({ todo }) => {
                     Edit
                 </button>
                 <button
-                    onClick={() =>
-                        dispatch({ type: "deleteTodo", payload: todo.id })
-                    }
+                    onClick={() => {
+                        axios.delete(
+                            `http://localhost:8000/todoList/${todo.id}`
+                        );
+                        setTodoList((pre) => [
+                            ...pre.filter((item) => item.id !== todo.id),
+                        ]);
+                    }}
                     className="btn btn-sm btn-outline btn-error"
                 >
                     Delete
